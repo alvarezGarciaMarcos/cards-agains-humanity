@@ -1,5 +1,9 @@
 <template>
-  <div class="card" :class="this.color">
+  <div
+    class="card"
+    :class="[this.color ? this.color : '', this.isActive ? 'active' : '']"
+    @click="this.myFilter"
+  >
     <div class="body">
       <p>{{ text }}</p>
     </div>
@@ -11,6 +15,16 @@ export default {
   props: {
     text: String,
     color: String
+  },
+  data() {
+    return {
+      isActive: false
+    };
+  },
+  methods: {
+    myFilter: function() {
+      this.isActive = !this.isActive;
+    }
   }
 };
 </script>
@@ -41,7 +55,14 @@ export default {
   transition: all 200ms ease-in-out;
 }
 
-.white:hover {
+.white:hover,
+.card.active {
   transform: scale(1.1);
+}
+
+.card.active {
+  border: 2px solid black;
+  border-spacing: 2px;
+  box-sizing: content-box;
 }
 </style>
