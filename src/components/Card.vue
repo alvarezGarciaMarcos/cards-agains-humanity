@@ -52,17 +52,11 @@ export default {
   background-color: white;
   color: black;
   cursor: pointer;
-  transition: all 200ms ease-in-out;
+  transition: all 200ms ease-in;
 }
 
 .white:hover,
 .card.active {
-  transform: scale(1.1);
-}
-
-.card.active {
-  border: 2px solid black;
-  border-spacing: 2px;
-  box-sizing: content-box;
+  transform: scale(1.05);
 }
 </style>
