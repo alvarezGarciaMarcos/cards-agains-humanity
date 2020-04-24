@@ -1,37 +1,47 @@
 <template>
   <div
+    @click="myFilter"
     class="card"
-    :class="[this.color ? this.color : '', this.isActive ? 'active' : '']"
-    @click="this.myFilter"
+    :class="[this.color ? this.color : '', this.disabled && this.color !== 'black' ? 'disabled' : '']"
   >
-    <div class="body">
+    <div disabled class="body">
       <p>{{ text }}</p>
+      <div class="pick" v-if="this.color === 'black' && this.pick > 1">{{ "Pick " + this.pick }}</div>
     </div>
   </div>
 </template>
 
 <script>
+import { bus } from "../EventBus";
+import { mapGetters } from "vuex";
 export default {
-  props: {
-    text: String,
-    color: String
-  },
+  props: ["text", "color", "pick", "prevent", "onClick"],
   data() {
     return {
-      isActive: false
+      disabled: false
     };
   },
+  computed: mapGetters(["currentUser"]),
   methods: {
     myFilter: function() {
-      this.isActive = !this.isActive;
+      console.log("I have been picked!");
+      this.$emit("picked", { card: this.text, user: this.currentUser });
+      if (!this.disabled && !this.prevent) {
+        bus.$emit("picked", this.text);
+      }
     }
+  },
+  created() {
+    bus.$on("picked", text => {
+      if (text !== this.text) this.disabled = true;
+    });
   }
 };
 </script>
 <style scoped>
 .card {
-  height: 350px;
-  width: 200px;
+  height: 40vh;
+  width: 20vh;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
@@ -55,8 +65,25 @@ export default {
   transition: all 200ms ease-in;
 }
 
+.card .body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.pick {
+  margin-top: auto;
+  margin-bottom: 1em;
+}
+
 .white:hover,
-.card.active {
+.card.white.active {
   transform: scale(1.05);
+}
+
+.disabled {
+  opacity: 0.2;
 }
 </style>
